@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD Sepupuku Tersayang! 🎉</title>
+    <!-- Tailwind CSS untuk tampilan modern -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Canvas Confetti untuk efek petasan kertas -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 3s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-amber-100 via-pink-100 to-purple-200 min-h-screen flex flex-col items-center justify-center p-4 font-sans text-gray-800">
+
+    <!-- Elemen Audio (Lagu Jamrud) -->
+    <!-- Catatan: Ganti 'jamrud.mp3' dengan file musikmu sendiri jika ingin menggunakan file lokal -->
+    <audio id="lagu-hbd" src="jamrud.mp3" loop></audio>
+
+    <!-- Card Utama -->
+    <div class="bg-white/80 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-md w-full text-center border border-white/50 animate-bounce-slow">
+        
+        <!-- Avatar / Ilustrasi -->
+        <div class="text-6xl mb-4">👑</div>
+        
+        <!-- Judul -->
+        <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 mb-2">
+            Happy Birthday, Sepupu Ria!
+        </h1>
+        <p class="text-sm text-gray-500 font-medium tracking-wide uppercase mb-4">Dari Sepupumu yang Paling Keren 😎</p>
+
+        <!-- Tombol Musik Rock Jamrud -->
+        <button id="btn-musik" onclick="toggleMusik()" class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full text-xs shadow-md transform active:scale-95 transition mb-4 animate-pulse">
+            <span>🎸</span> <span id="text-musik">PUTAR LAGU BIAR ASIK</span>
+        </button>
+
+        <!-- Kotak Kata-Kata Ucapan -->
+        <div class="bg-white p-5 rounded-2xl shadow-inner min-h-[120px] flex items-center justify-center border border-gray-100 mb-6">
+            <p id="quote-text" class="text-lg font-semibold text-purple-700 italic">
+                "Klik tombol di bawah untuk menerima wejangan suci dari alam gaib!"
+            </p>
+        </div>
+
+        <!-- Tombol Interaktif -->
+        <div class="space-y-3">
+            <button onclick="gantiQuote()" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition">
+                🔮 Klik Kata-Kata Penyemangat
+            </button>
+
+            <button onclick="hujanKonfeti()" class="w-full bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold py-3 px-6 rounded-xl shadow-md transform active:scale-95 transition">
+                🎉 Rayakan! (Hujan Konfeti)
+            </button>
+
+            <button id="btn-hadiah" onclick="klaimHadiah()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-xl text-sm transition">
+                🎁 Klaim Hadiah Premium
+            </button>
+        </div>
+
+        <!-- Footer Kecil -->
+        <p class="text-xs text-gray-400 mt-6">Dibuat dengan penuh rasa terpaksa & kasih sayang ❤️</p>
+    </div>
+
+    <!-- JavaScript untuk logika interaktif -->
+    <script>
+        const quotes = [
+            "Selamat ulang tahun! Ingat, umur itu cuma angka. Tapi dalam kasusmu, angkanya udah mulai banyak ya. Tetap semangat!",
+            "Makin tua harusnya makin bijaksana. Tapi kalau kamu makin absurd, gapapa kok, aku maklum. Semangat bertahan hidup!",
+            "Tenang, kerutan di wajah itu cuma garis senyum yang kesasar. Tetap semangat menggapai mimpi, minimal mimpi bangun siang di hari kerja.",
+            "Selamat menua! Semoga rezekimu lancar, jodohmu mendekat, dan yang paling penting... buruan sukses biar bisa traktir aku terus!",
+            "Selamat hari brojol! Ingat, pusing karena cicilan itu biasa, yang luar biasa adalah kamu masih bisa senyum tanpa beban kayak hari ini. Cayoo!",
+            "Jangan sedih makin tua, seenggaknya kamu udah berhasil melewati setahun lagi tanpa bikin malu silsilah keluarga besar kita. Proud of you!"
+        ];
+
+        let quoteIndex = 0;
+        const lagu = document.getElementById('lagu-hbd');
+        const btnMusik = document.getElementById('btn-musik');
+        const textMusik = document.getElementById('text-musik');
+
+        // Fungsi Nyalakan / Matikan Musik
+        function toggleMusik() {
+            if (lagu.paused) {
+                lagu.play().catch(error => console.log("Musik diblokir browser, butuh interaksi user."));
+                textMusik.innerText = "JEDA LAGU JAMRUD";
+                btnMusik.classList.remove('bg-red-500', 'hover:bg-red-600');
+                btnMusik.classList.add('bg-green-500', 'hover:bg-green-600', 'animate-none');
+                hujanKonfeti(); // Kasih efek meriah pas musik nyala
+            } else {
+                lagu.pause();
+                textMusik.innerText = "PUTAR LAGU JAMRUD";
+                btnMusik.classList.remove('bg-green-500', 'hover:bg-green-600');
+                btnMusik.classList.add('bg-red-500', 'hover:bg-red-600', 'animate-pulse');
+            }
+        }
+
+        // Fungsi ganti teks ucapan kocak
+        function gantiQuote() {
+            const textElement = document.getElementById('quote-text');
+            textElement.style.opacity = 0;
+            
+            setTimeout(() => {
+                textElement.innerText = `"${quotes[quoteIndex]}"`;
+                textElement.style.opacity = 1;
+                quoteIndex = (quoteIndex + 1) % quotes.length;
+            }, 200);
+
+            confetti({
+                particleCount: 30,
+                spread: 40,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Fungsi efek konfeti heboh
+        function hujanKonfeti() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
+
+        // Fungsi tombol hadiah jebakan
+        function klaimHadiah() {
+            const btn = document.getElementById('btn-hadiah');
+            btn.innerText = "❌ ERROR: Saldo Sepupumu Tipis!";
+            btn.classList.remove('bg-gray-200', 'text-gray-700');
+            btn.classList.add('bg-red-500', 'text-white', 'font-bold');
+            alert("Maaf, fitur 'Klaim Hadiah' sedang mengalami gangguan dompet menipis. Coba lagi tahun depan ya! 😜");
+        }
+
+        window.onload = function() {
+            setTimeout(hujanKonfeti, 500);
+        };
+    </script>
+</body>
+</html>
